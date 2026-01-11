@@ -10,27 +10,39 @@ use Symfony\Component\Routing\Attribute\Route;
 
 class MasterDataController extends AbstractController
 {
-    // Fíjate: Ya no usamos __construct para crear datos falsos.
-    // Los datos ya están en la BBDD gracias a las Fixtures que hicimos antes.
-
     #[Route('/recipe-types', name: 'app_recipe_types', methods: ['GET'])]
     public function getRecipeTypes(RecipeTypeRepository $repository): JsonResponse
     {
-        // 1. Vamos a la BBDD a por los datos (en tu código viejo esto era $this->restauranteItaliano)
         $typesFromDB = $repository->findAll();
+        
+        // Convertimos las Entidades privadas a Arrays públicos
+        $data = [];
+        foreach ($typesFromDB as $type) {
+            $data[] = [
+                'id' => $type->getId(),
+                'name' => $type->getName(),
+                'description' => $type->getDescription()
+            ];
+        }
 
-        // 2. Symfony es listo y al hacer json() convierte las Entidades a JSON automáticamente.
-        // (Nota: Si necesitamos formato exacto de DTO, lo mapeamos aquí, pero para empezar esto vale)
-        return $this->json($typesFromDB);
+        return $this->json($data);
     }
 
     #[Route('/nutrient-types', name: 'app_nutrient_types', methods: ['GET'])]
     public function getNutrientTypes(NutrientTypeRepository $repository): JsonResponse
     {
-        // 1. Buscamos todos los nutrientes en la BBDD
         $nutrientsFromDB = $repository->findAll();
 
-        // 2. Devolvemos el JSON
-        return $this->json($nutrientsFromDB);
+        // Lo mismo para los nutrientes
+        $data = [];
+        foreach ($nutrientsFromDB as $nutrient) {
+            $data[] = [
+                'id' => $nutrient->getId(),
+                'name' => $nutrient->getName(),
+                'unit' => $nutrient->getUnit()
+            ];
+        }
+
+        return $this->json($data);
     }
 }
