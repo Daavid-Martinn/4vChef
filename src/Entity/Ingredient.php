@@ -19,6 +19,11 @@ class Ingredient
     #[ORM\Column]
     private ?float $quantity = null;
 
+    // --- NUEVA PROPIEDAD AÑADIDA ---
+    #[ORM\Column(length: 50)]
+    private ?string $unit = null;
+    // -------------------------------
+
     #[ORM\ManyToOne(inversedBy: 'ingredients')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Recipe $recipe = null;
@@ -51,6 +56,20 @@ class Ingredient
 
         return $this;
     }
+
+    // --- GETTERS Y SETTERS AÑADIDOS ---
+    public function getUnit(): ?string
+    {
+        return $this->unit;
+    }
+
+    public function setUnit(string $unit): static
+    {
+        $this->unit = $unit;
+
+        return $this;
+    }
+    // ----------------------------------
 
     public function getRecipe(): ?Recipe
     {
